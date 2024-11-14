@@ -1,4 +1,4 @@
 # portfolio
 Portfolio showcasing EDA projects
 
-![Diagnostic Plots](DiagnosticGraphs.pdf)
+![Diagnostic Plots](DiagnosticGraphs.png)

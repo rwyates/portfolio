@@ -12,4 +12,5 @@ This analysis implements  regression techniques to model the relationship betwee
 3. Linear Regression & Diagnostic Graph Analysis
 4. Statistical Inferences & Interval Building
 
+#### Glass Ampule Breakage Diagnostics
 ![Diagnostic Plots](images/AmpulesDiagnosticPlots.png)

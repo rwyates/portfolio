@@ -5,12 +5,13 @@
 # and glass ampule breakage rates using various regression techniques. Small (n=10) dataset. 
 # Because the functions used in this analysis are generalized, they will seamlessly apply to any other given dataset.
 
-# Loading utilized packages
+# Load required packages
 library(ggplot2)
 library(dplyr)
 library(gridExtra)
 library(car)
 library(lmtest)
+library(grid)
 
 # 1. Loading Data
 load_and_prepare_data <- function(file_path = "CH01PR21.csv") {
@@ -19,7 +20,7 @@ load_and_prepare_data <- function(file_path = "CH01PR21.csv") {
   return(data)
 }
 
-# 2. EDA
+# 2. Exploratory Data Analysis Functions
 calculate_summary_stats <- function(data) {
   summary_stats <- list(
     basic_summary = summary(data),
@@ -32,43 +33,60 @@ calculate_summary_stats <- function(data) {
 }
 
 create_eda_plots <- function(data) {
-  # Scatter plot with regression line
+  # Main scatter plot
   p1 <- ggplot(data, aes(x = transfers, y = broken_ampules)) +
-    geom_point(color = "blue", size = 3) +
-    geom_smooth(method = "lm", se = TRUE, fill = "lightblue") +
-    labs(title = "Glass Ampule Breakage vs Number of Transfers",
-         x = "Number of Transfers",
-         y = "Number of Broken Ampules") +
+    geom_point(color = "steelblue", size = 3, alpha = 0.8) +
+    geom_smooth(method = "lm", se = TRUE, fill = "lightblue", color = "red3", alpha = 0.2) +
+    labs(
+      title = "Glass Ampule Breakage Analysis",
+      subtitle = "Impact of Transfers on Breakage Rate",
+      x = "Number of Transfers",
+      y = "Number of Broken Ampules"
+    ) +
     theme_minimal() +
     theme(
-      plot.title = element_text(hjust = 0.5, size = 14, face = "bold"),
-      axis.title = element_text(size = 12),
-      axis.text = element_text(size = 10)
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(size = 12, color = "grey50"),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 9),
+      panel.grid.minor = element_blank(),
+      panel.border = element_rect(fill = NA, color = "grey90")
     ) +
     scale_x_continuous(breaks = seq(0, max(data$transfers), by = 1)) +
-    annotate("text", 
-             x = max(data$transfers) * 0.2, 
-             y = max(data$broken_ampules) * 0.9,
-             label = paste("R² =", round(summary(lm(broken_ampules ~ transfers, data))$r.squared, 3)),
-             size = 4)
+    annotate(
+      "text",
+      x = max(data$transfers) * 0.2,
+      y = max(data$broken_ampules) * 0.9,
+      label = paste("R² =", round(summary(lm(broken_ampules ~ transfers, data))$r.squared, 3)),
+      size = 4
+    )
   
-  # Distribution of broken ampules
+  # Distribution histogram
   p2 <- ggplot(data, aes(x = broken_ampules)) +
-    geom_histogram(fill = "blue", alpha = 0.7, bins = 8) +
-    labs(title = "Distribution of Broken Ampules",
-         x = "Number of Broken Ampules",
-         y = "Frequency") +
-    theme_minimal()
+    geom_histogram(fill = "steelblue", color = "white", alpha = 0.7, bins = 8) +
+    labs(
+      title = "Distribution of Broken Ampules",
+      subtitle = "Frequency Analysis",
+      x = "Number of Broken Ampules",
+      y = "Frequency"
+    ) +
+    theme_minimal() +
+    theme(
+      plot.title = element_text(face = "bold", size = 14),
+      plot.subtitle = element_text(size = 12, color = "grey50"),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 9),
+      panel.grid.minor = element_blank(),
+      panel.border = element_rect(fill = NA, color = "grey90")
+    )
   
   return(list(scatter = p1, hist = p2))
 }
 
-# 3. Perform Regression Analysis
+# 3. Regression Analysis Functions
 perform_regression <- function(data) {
-  # Fit linear model
   model <- lm(broken_ampules ~ transfers, data)
   
-  # Calculate key statistics
   n <- nrow(data)
   SSE <- sum(residuals(model)^2)
   SSR <- sum((predict(model) - mean(data$broken_ampules))^2)
@@ -79,7 +97,6 @@ perform_regression <- function(data) {
   adj_R_squared <- 1 - (SSE/(n-2))/(SSTO/(n-1))
   F_stat <- MSR/MSE
   
-  # Compile results
   results <- list(
     model = model,
     summary = summary(model),
@@ -99,76 +116,140 @@ perform_regression <- function(data) {
   return(results)
 }
 
-# 4. Enhanced Diagnostic Plots
-create_diagnostic_plots <- function(model) {
-  # Get model data
-  df <- data.frame(
+# 4. Diagnostic Plots
+create_diagnostic_plots <- function(model, data) {
+  # Create base diagnostic data
+  diagnostics_data <- data.frame(
     fitted = fitted(model),
     residuals = residuals(model),
     std_residuals = rstandard(model),
+    studentized_residuals = rstudent(model),
     leverage = hatvalues(model),
-    cook_dist = cooks.distance(model)
+    cooks_distance = cooks.distance(model)
   )
   
-  # 1. Residuals vs Fitted
-  p1 <- ggplot(df, aes(x = fitted, y = residuals)) +
-    geom_point(aes(color = abs(std_residuals)), size = 3) +
-    scale_color_gradient(low = "blue", high = "red") +
-    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-    labs(title = "Residuals vs Fitted",
-         x = "Fitted values",
-         y = "Residuals") +
-    theme_minimal() +
-    theme(legend.position = "none")
+  # Theme
+  diagnostic_theme <- theme_minimal() +
+    theme(
+      plot.title = element_text(face = "bold", size = 12),
+      plot.subtitle = element_text(size = 10, color = "grey50"),
+      axis.title = element_text(size = 10),
+      axis.text = element_text(size = 9),
+      legend.position = "bottom",
+      legend.text = element_text(size = 8),
+      panel.grid.minor = element_blank(),
+      panel.border = element_rect(fill = NA, color = "grey90"),
+      plot.background = element_rect(fill = "white", color = NA),
+      panel.background = element_rect(fill = "white", color = NA)
+    )
   
-  # 2. Normal Q-Q Plot
+  # 1. Residuals vs Fitted Plot
+  p1 <- ggplot(diagnostics_data, aes(x = fitted, y = residuals)) +
+    geom_point(aes(color = abs(std_residuals)), size = 2, alpha = 0.8) +
+    geom_smooth(se = FALSE, color = "red3", size = 0.5, linetype = "dashed", method = "loess") +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "grey50", size = 0.3) +
+    scale_color_gradient(low = "steelblue", high = "red3", name = "|Standardized Residuals|") +
+    labs(
+      title = "Residuals vs Fitted Values",
+      subtitle = "Checking linearity and homoscedasticity",
+      x = "Fitted Values",
+      y = "Residuals"
+    ) +
+    diagnostic_theme
+  
+  # 2. Enhanced Q-Q Plot
   qq_data <- data.frame(
-    theoretical = qqnorm(df$std_residuals, plot.it = FALSE)$x,
-    sample = qqnorm(df$std_residuals, plot.it = FALSE)$y
+    theoretical = qqnorm(diagnostics_data$std_residuals, plot.it = FALSE)$x,
+    observed = qqnorm(diagnostics_data$std_residuals, plot.it = FALSE)$y
   )
   
-  p2 <- ggplot(qq_data, aes(x = theoretical, y = sample)) +
-    geom_point(size = 3, color = "blue") +
-    geom_abline(intercept = 0, slope = 1, color = "red", linetype = "dashed") +
-    labs(title = "Normal Q-Q Plot",
-         x = "Theoretical Quantiles",
-         y = "Standardized Residuals") +
-    theme_minimal()
+  p2 <- ggplot(qq_data, aes(x = theoretical, y = observed)) +
+    geom_point(color = "steelblue", size = 2, alpha = 0.8) +
+    geom_abline(intercept = 0, slope = 1, color = "red3", 
+                linetype = "dashed", size = 0.5) +
+    labs(
+      title = "Normal Q-Q Plot",
+      subtitle = "Checking normality of residuals",
+      x = "Theoretical Quantiles",
+      y = "Standardized Residuals"
+    ) +
+    diagnostic_theme
   
   # 3. Scale-Location Plot
-  p3 <- ggplot(df, aes(x = fitted, y = sqrt(abs(std_residuals)))) +
-    geom_point(aes(color = sqrt(abs(std_residuals))), size = 3) +
-    scale_color_gradient(low = "blue", high = "red") +
-    labs(title = "Scale-Location Plot",
-         x = "Fitted values",
-         y = "√|Standardized Residuals|") +
-    theme_minimal() +
-    theme(legend.position = "none")
+  p3 <- ggplot(diagnostics_data, 
+               aes(x = fitted, y = sqrt(abs(std_residuals)))) +
+    geom_point(aes(color = sqrt(abs(std_residuals))), size = 2, alpha = 0.8) +
+    geom_smooth(se = FALSE, color = "red3", size = 0.5, 
+                linetype = "dashed", method = "loess") +
+    scale_color_gradient(low = "steelblue", high = "red3", 
+                         name = "√|Standardized Residuals|") +
+    labs(
+      title = "Scale-Location Plot",
+      subtitle = "Checking homoscedasticity",
+      x = "Fitted Values",
+      y = "√|Standardized Residuals|"
+    ) +
+    diagnostic_theme
   
   # 4. Residuals vs Leverage Plot
-  p4 <- ggplot(df, aes(x = leverage, y = std_residuals)) +
-    geom_point(aes(size = cook_dist), color = "blue") +
-    geom_hline(yintercept = 0, linetype = "dashed", color = "red") +
-    geom_vline(xintercept = 2 * mean(df$leverage), linetype = "dashed", color = "red") +
-    labs(title = "Residuals vs Leverage",
-         x = "Leverage",
-         y = "Standardized Residuals",
-         size = "Cook's distance") +
-    theme_minimal() +
-    scale_size_continuous(range = c(1, 6))
+  max_cook <- max(diagnostics_data$cooks_distance, na.rm = TRUE)
+  p4 <- ggplot(diagnostics_data, aes(x = leverage, y = std_residuals)) +
+    geom_point(aes(size = cooks_distance), color = "steelblue", alpha = 0.8) +
+    geom_hline(yintercept = 0, linetype = "dashed", color = "grey50", size = 0.3) +
+    geom_vline(xintercept = mean(diagnostics_data$leverage) * c(2, 3), 
+               linetype = "dashed", color = "red3", size = 0.3) +
+    scale_size_continuous(range = c(1, 5), name = "Cook's Distance") +
+    labs(
+      title = "Residuals vs Leverage",
+      subtitle = "Identifying influential cases",
+      x = "Leverage",
+      y = "Standardized Residuals"
+    ) +
+    diagnostic_theme +
+    annotate("text", x = max(diagnostics_data$leverage), 
+             y = max(abs(diagnostics_data$std_residuals)),
+             label = paste("Max Cook's D:", round(max_cook, 3)),
+             hjust = 1, vjust = 1, size = 3)
   
-  # Return both arranged plots and individual plots
+  # 5. Cook's Distance Plot
+  p5 <- ggplot(diagnostics_data, aes(x = 1:nrow(diagnostics_data), 
+                                     y = cooks_distance)) +
+    geom_segment(aes(x = 1:nrow(diagnostics_data), 
+                     xend = 1:nrow(diagnostics_data),
+                     y = 0, yend = cooks_distance),
+                 color = "steelblue", size = 0.5) +
+    geom_point(color = "steelblue", size = 2) +
+    geom_hline(yintercept = 4/nrow(diagnostics_data), 
+               linetype = "dashed", color = "red3", size = 0.3) +
+    labs(
+      title = "Cook's Distance Plot",
+      subtitle = "Identifying influential observations",
+      x = "Observation Number",
+      y = "Cook's Distance"
+    ) +
+    diagnostic_theme
+  
+  # Arrange all plots
+  plots_grid <- arrangeGrob(
+    p1, p2, p3, p4, p5,
+    ncol = 2,
+    top = textGrob("Regression Diagnostic Plots",
+                   gp = gpar(fontsize = 14, fontface = "bold"))
+  )
+  
   return(list(
+    combined = plots_grid,
     residuals_vs_fitted = p1,
     qq_plot = p2,
     scale_location = p3,
-    residuals_vs_leverage = p4
+    residuals_vs_leverage = p4,
+    cooks_distance = p5
   ))
 }
 
-# 5. Interval Calculations
+# 5. Inference Interval Calculations
 calculate_intervals <- function(model, newdata, level = 0.95) {
-  # Confidence intervals for parameters
+  # Parameter intervals
   param_intervals <- confint(model, level = level)
   
   # Confidence intervals for mean response
@@ -188,11 +269,11 @@ calculate_intervals <- function(model, newdata, level = 0.95) {
 
 # 6. Matrix Calculations
 calculate_matrices <- function(data) {
-  # Create X matrix (including intercept)
+  # Create matrices
   X <- cbind(1, data$transfers)
   Y <- matrix(data$broken_ampules)
   
-  # Calculate matrices
+  # Calculate key matrices
   XtX <- t(X) %*% X
   XtY <- t(X) %*% Y
   beta_hat <- solve(XtX) %*% XtY
@@ -208,7 +289,7 @@ calculate_matrices <- function(data) {
   ))
 }
 
-# 7. Main Analysis Function for Summarizing Findings
+# 7. Main Analysis Function ----
 main_analysis <- function() {
   # Load data
   data <- load_and_prepare_data()
@@ -221,7 +302,7 @@ main_analysis <- function() {
   reg_results <- perform_regression(data)
   
   # Diagnostic plots
-  diag_plots <- create_diagnostic_plots(reg_results$model)
+  diag_plots <- create_diagnostic_plots(reg_results$model, data)
   
   # Calculate intervals
   newdata <- data.frame(transfers = seq(0, 3, by = 1))
@@ -230,7 +311,6 @@ main_analysis <- function() {
   # Matrix calculations
   matrices <- calculate_matrices(data)
   
-  # Return all results
   return(list(
     data = data,
     summary_stats = summary_stats,
@@ -242,19 +322,19 @@ main_analysis <- function() {
   ))
 }
 
-# 8. Function to Print Results
+# 8. Print Results
 print_results <- function(results) {
   # Print summary statistics
   cat("\n=== Summary Statistics ===\n")
   print(results$summary_stats$basic_summary)
-  cat("\nCorrelation between transfers and breakage:", 
+  cat("\nCorrelation coefficient:", 
       round(results$summary_stats$correlation, 4))
   
   # Print regression results
   cat("\n\n=== Regression Analysis ===\n")
   print(results$regression$summary)
   
-  # Print additional statistics
+  # Print model statistics
   cat("\n=== Model Statistics ===\n")
   stats <- results$regression$statistics
   cat("R-squared:", round(stats$R_squared, 4), "\n")
@@ -267,33 +347,13 @@ print_results <- function(results) {
   cat("\n=== Parameter Confidence Intervals ===\n")
   print(results$intervals$parameters)
   
-  # Create plots
-  # EDA plots
-  grid.arrange(
-    results$eda_plots$scatter,
-    results$eda_plots$hist,
-    ncol = 2,
-    top = "Exploratory Data Analysis"
-  )
-  
   # Diagnostic plots
-  grid.arrange(
-    results$diagnostics$residuals_vs_fitted,
-    results$diagnostics$qq_plot,
-    results$diagnostics$scale_location,
-    results$diagnostics$residuals_vs_leverage,
-    ncol = 2,
-    top = "Diagnostic Plots"
-  )
+  grid.draw(results$diagnostics$combined)
 }
 
-# 9. Execute Analysis
+# 9. Execute Analysis ----
 results <- main_analysis()
 print_results(results)
 
 # 10. Save Results
 save(results, file = "ampule_analysis_results.RData")
-
-  print(summary(model))
-  sink()
-}

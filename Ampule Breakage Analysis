@@ -2,7 +2,8 @@
 # Author: Robert Yates
 # Date: November 2024
 # Description: Analysis of the relationship between number of airfreight transfers
-# and glass ampule breakage rates using various regression techniques. Small (n=10) dataset.
+# and glass ampule breakage rates using various regression techniques. Small (n=10) dataset. 
+# Because the functions used in this analysis are generalized, they will seamlessly apply to any other given dataset.
 
 # Loading utilized packages
 library(ggplot2)
@@ -62,7 +63,7 @@ create_eda_plots <- function(data) {
   return(list(scatter = p1, hist = p2))
 }
 
-# 3. Regression Analysis Functions ----
+# 3. Perform Regression Analysis
 perform_regression <- function(data) {
   # Fit linear model
   model <- lm(broken_ampules ~ transfers, data)
@@ -98,7 +99,7 @@ perform_regression <- function(data) {
   return(results)
 }
 
-# 4. Enhanced Diagnostic Plots ----
+# 4. Enhanced Diagnostic Plots
 create_diagnostic_plots <- function(model) {
   # Get model data
   df <- data.frame(
@@ -165,7 +166,7 @@ create_diagnostic_plots <- function(model) {
   ))
 }
 
-# 5. Interval Calculations ----
+# 5. Interval Calculations
 calculate_intervals <- function(model, newdata, level = 0.95) {
   # Confidence intervals for parameters
   param_intervals <- confint(model, level = level)
@@ -185,7 +186,7 @@ calculate_intervals <- function(model, newdata, level = 0.95) {
   ))
 }
 
-# 6. Matrix Calculations ----
+# 6. Matrix Calculations
 calculate_matrices <- function(data) {
   # Create X matrix (including intercept)
   X <- cbind(1, data$transfers)

@@ -1,4 +1,4 @@
 # portfolio
 Portfolio showcasing EDA projects
 
-![Diagnostic Plots](AmpuleBreakageDiagnostics.pdf)
+![Diagnostic Plots](DiagnosticGraphs.pdf)

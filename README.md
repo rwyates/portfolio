@@ -2,4 +2,4 @@
 Portfolio showcasing EDA projects.
 Pictured below - Diagnostic Plots of Ampule Breakage Dataset
 
-![Diagnostic Plots](DiagnosticGraphs.png)
+![Diagnostic Plots](images/DiagnosticGraphs.png)

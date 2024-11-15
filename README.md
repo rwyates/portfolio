@@ -1,5 +1,5 @@
 # portfolio
-Data Analysis Projects | Fall 2025
+Data Analysis Projects Portfolio | Fall 2025
 
 This repository showcases a collection of data-driven projects focusing on exploratory data analysis (EDA), statistical modeling, and predictive analytics. Through these projects, I seek to demonstrate proficiency in applying both classical statistical methods and modern data science techniques to extract insights from datasets.
 

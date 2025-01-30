@@ -11,4 +11,4 @@ Key Skills Demonstrated:
 * Data visualization using seaborn and matplotlib
 * Time series analysis to understand crash patterns and seasonal trends
 * Geospatial analysis to map high-risk areas (using folium)
-* 
+

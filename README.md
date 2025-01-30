@@ -16,4 +16,5 @@ Key Skills Demonstrated:
 * Time series analysis to understand crash patterns and seasonal trends
 * Geospatial analysis to map high-risk areas (using folium)
 
-![Alt text](main/TSDP Poster.pdf)
+Project Visualization:
+![Alt text](NYC%20Collision%20Patterns%20by%20Income%20Level%20(TDSP)/TDSP%20Posterboard.jpg)

@@ -16,3 +16,4 @@ Key Skills Demonstrated:
 * Time series analysis to understand crash patterns and seasonal trends
 * Geospatial analysis to map high-risk areas (using folium)
 
+![Alt text](main/TSDP Poster.pdf)

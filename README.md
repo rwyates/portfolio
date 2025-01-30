@@ -1,16 +1,13 @@
 # portfolio
-Data Analysis Projects Portfolio | Fall 2025
 
-This repository showcases a collection of data-driven projects focusing on exploratory data analysis (EDA), statistical modeling, and predictive analytics. Through these projects, I seek to demonstrate proficiency in applying both classical statistical methods and modern data science techniques to extract insights from datasets.
+This repository showcases my portfolio of data science projects. Through this projects, I hope to demonstrate proficiency in applying statistical and machine learning methods to extract insights from various datasets.
 
-## Featured Projects:
-### Glass Ampule Breakage Data Analysis
-This analysis implements  regression techniques to model the relationship between transportation handling and product integrity in supply chains. Key technical highlights include:
+## Project Summaries
+### NYC Traffic Safety Analysis Project
+Also known as the NEBDHub & NSDC Transportation Data Science Project (TDSP), this project was part of an open collaborative project with the Northeast Big Data Innovation Hub (NEBDHub)  and U.S. Department of Transportation, where I analyzed NYC motor vehicle collision data to understand patterns in traffic accidents and identify potential safety improvements. I analyzed various aspects of the data, from common contributing factors to how accident rates change throughout the day and across different neighborhoods. I also utilized U.S Census Bureau to combine collision data with demographic and income data to gain insights on the demographics of where the collisions took place
 
-1. Statistical Computing Using R
-2. Advanced Data Visualization with ggplot2
-3. Linear Regression & Diagnostic Graph Analysis
-4. Statistical Inferences & Interval Building
-
-#### Glass Ampule Breakage Diagnostics
-![Diagnostic Plots](images/AmpulesDiagnosticPlots.png)
+Key Skills Demonstrated:
+* Python data analysis (mainly pandas for data wrangling and statsmodels for time series work)
+* Data visualization using seaborn and matplotlib
+* Time series analysis to understand crash patterns and seasonal trends
+* Geospatial analysis to map high-risk areas (using folium)

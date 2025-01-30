@@ -1,6 +1,6 @@
 # portfolio
 
-This repository showcases my portfolio of data science projects. Through this projects, I hope to demonstrate proficiency in applying statistical and machine learning methods to extract insights from various datasets.
+This repository showcases a collection of data science projects. Through this projects, I hope to demonstrate proficiency in applying statistical and machine learning methods to extract insights from various datasets.
 
 ## Project Summaries
 ### NYC Collision Patterns by Income Level (TDSP)

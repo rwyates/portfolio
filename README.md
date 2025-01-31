@@ -16,5 +16,5 @@ Skills Used:
 * Time series analysis to understand crash patterns and seasonal trends
 * Geospatial analysis to map high-risk areas (using folium)
 
-
-![Alt text](NYC%20Vehicle%20Collision%20Patterns%20by%20Income%20Level%20(TDSP)/TDSP_Posterboard.jpg)
+NYC Vehicle Collision Patterns by Income (TDSP)/TDSP_Posterboard.jpg
+![Alt text](NYC%20Vehicle%20Collision%20Patterns%20by%20Income%20(TDSP)/TDSP_Posterboard.jpg)

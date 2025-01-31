@@ -17,4 +17,4 @@ Skills Used:
 * Geospatial analysis to map high-risk areas (using folium)
 
 
-![Alt text](NYC%20Collision%20Patterns%20by%20Income%20Level%20(TDSP)/TDSP_Posterboard.jpg)
+![Alt text](NYC%20Vehicle%20Collision%20Patterns%20by%20Income%20Level%20(TDSP)/TDSP_Posterboard.jpg)
